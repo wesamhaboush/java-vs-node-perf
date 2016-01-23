@@ -1,13 +1,8 @@
 package net.codebreeze.rest.server;
 
-import net.codebreeze.rest.server.config.AppConfig;
-import net.codebreeze.rest.server.controllers.HelloRestService;
 import org.apache.catalina.Context;
-import org.apache.catalina.Wrapper;
 import org.apache.catalina.startup.Tomcat;
-import org.glassfish.jersey.servlet.ServletContainer;
-import org.springframework.web.context.ContextLoaderListener;
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+import org.springframework.web.servlet.DispatcherServlet;
 
 import java.io.File;
 
@@ -20,12 +15,8 @@ public class TomcatDriver extends AbstractDriver
         tomcat.setPort( serviceConfiguration.port );
         final File base = new File( System.getProperty( "java.io.tmpdir" ) );
         final Context rootCtx = tomcat.addContext( "", base.getAbsolutePath() );
-        rootCtx.addApplicationListener( ContextLoaderListener.class.getCanonicalName() );
-        rootCtx.addParameter( "contextClass", AnnotationConfigWebApplicationContext.class.getName() );
-        rootCtx.addParameter( "contextConfigLocation", AppConfig.class.getCanonicalName() );
-        Wrapper servlet = Tomcat.addServlet( rootCtx, "REST_API_Servlet", new ServletContainer() );
-        servlet.addInitParameter( "javax.ws.rs.Application", HelloRestService.class.getCanonicalName() );
-        rootCtx.addServletMapping( "/*", "REST_API_Servlet" );
+        Tomcat.addServlet( rootCtx, "springServlet", new DispatcherServlet( getContext() ) );
+        rootCtx.addServletMapping( "/*", "springServlet" );
         tomcat.start();
         tomcat.getServer().await();
     }

@@ -3,25 +3,23 @@ package net.codebreeze.rest.server.controllers;
 import net.codebreeze.rest.server.model.Greeting;
 import net.codebreeze.rest.server.services.HelloService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-
-@Component
-@Path( "hello" )
+@RestController
 public class HelloRestService
 {
     @Autowired
     private HelloService helloService;
 
-    @GET
-    @Path( "/{name}" )
-    @Produces( {MediaType.APPLICATION_JSON} )
-    public Greeting hello( @PathParam( "name" ) String name )
+    @RequestMapping(
+        value = "/hello/{name}",
+        method = RequestMethod.GET,
+        produces = "application/json"
+    )
+    public Greeting hello( @PathVariable( "name" ) String name )
     {
         return helloService.create( name );
     }

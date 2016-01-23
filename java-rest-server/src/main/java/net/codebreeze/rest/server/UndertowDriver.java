@@ -6,14 +6,14 @@ import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.servlet.Servlets;
-import io.undertow.servlet.api.*;
-import net.codebreeze.rest.server.config.AppConfig;
-import net.codebreeze.rest.server.controllers.HelloRestService;
-import org.glassfish.jersey.server.ResourceConfig;
+import io.undertow.servlet.api.DeploymentInfo;
+import io.undertow.servlet.api.DeploymentManager;
+import io.undertow.servlet.api.InstanceFactory;
+import io.undertow.servlet.api.InstanceHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.context.ContextLoaderListener;
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.DispatcherServlet;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -35,13 +35,10 @@ public class UndertowDriver extends AbstractDriver
             final DeploymentInfo servletBuilder = deployment()
                                                   .setClassLoader( UndertowDriver.class.getClassLoader() )
                                                   .setContextPath( "/" )
-                                                  .setDeploymentName( "test.war" )
-                                                  .addListener( Servlets.listener( ContextLoaderListener.class ) )
-                                                  .addInitParameter( "contextClass", AnnotationConfigWebApplicationContext.class.getCanonicalName() )
-                                                  .addInitParameter( "contextConfigLocation", AppConfig.class.getCanonicalName() )
+                                                  .setDeploymentName( "testing performance" )
                                                   .addServlets(
-                                                          Servlets.servlet( "REST_API_Servlet", org.glassfish.jersey.servlet.ServletContainer.class,
-                                                                  new ServletInstanceFactory() )
+                                                          Servlets.servlet( "MyServlet", DispatcherServlet.class,
+                                                                  new DispatcherServletInstanceFactory( getContext() ) )
                                                           .setLoadOnStartup( 0 )
                                                           .addMapping( "/*" )
                                                           .setAsyncSupported( true ) );
@@ -68,8 +65,15 @@ public class UndertowDriver extends AbstractDriver
         }
     }
 
-    private static class ServletInstanceFactory implements InstanceFactory<Servlet>
+    private static class DispatcherServletInstanceFactory implements InstanceFactory<Servlet>
     {
+
+        private final WebApplicationContext wac;
+
+        public DispatcherServletInstanceFactory( WebApplicationContext wac )
+        {
+            this.wac = wac;
+        }
 
         @Override
         public InstanceHandle<Servlet> createInstance() throws InstantiationException
@@ -79,7 +83,7 @@ public class UndertowDriver extends AbstractDriver
                 @Override
                 public Servlet getInstance()
                 {
-                    return new org.glassfish.jersey.servlet.ServletContainer( new ResourceConfig( HelloRestService.class ) );
+                    return new DispatcherServlet( wac );
                 }
                 @Override
                 public void release()
