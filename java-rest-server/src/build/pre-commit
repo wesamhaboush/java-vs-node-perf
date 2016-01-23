@@ -1,0 +1,46 @@
+#!/bin/bash
+# Installation:
+#   cd my_gitproject
+#   wget -O pre-commit.sh http://tinyurl.com/mkovs45
+#   ln -s ../../pre-commit.sh .git/hooks/pre-commit
+#   chmod +x pre-commit.sh
+
+OPTIONS=" \
+    --style=allman \
+    --add-brackets \
+    --lineend=linux \
+    --max-code-length=120 \
+    --break-after-logical \
+    --break-blocks \
+    --pad-oper \
+    --pad-paren-in \
+    --close-templates \
+    --delete-empty-lines"
+
+RETURN=0
+ASTYLE=$(which astyle)
+if [ $? -ne 0 ]; then
+    echo "[!] astyle not installed. Unable to check source file format policy." >&2
+    exit 1
+fi
+
+FILES=`git diff --cached --name-only --diff-filter=ACMR | grep -E "\.(java)$"`
+for FILE in $FILES; do
+    $ASTYLE $OPTIONS < $FILE | cmp -s $FILE -
+    if [ $? -ne 0 ]; then
+        echo "file [$FILE] is not in the right format, re-formatting ..." >&2
+        $ASTYLE $OPTIONS $FILE
+        rm -rvf "$FILE.orig"
+        git add $FILE
+        RETURN=$?
+        if [ $RETURN -eq 1 ]; then
+            echo "" >&2
+            echo "failed to format file: [$FILE], please investigate.." >&2
+            echo "Make sure you have run astyle with the following options:" >&2
+            echo $OPTIONS >&2
+            exit $RETURN
+        fi
+    fi
+done
+
+exit $RETURN

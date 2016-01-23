@@ -1,0 +1,11 @@
+.idea
+target/
+dependency-reduced-pom.xml
+*.log
+*.log.*
+*.iml
+Infinispan-SingleFileStore
+.settings/
+.classpath
+.project
+.DS_Store
