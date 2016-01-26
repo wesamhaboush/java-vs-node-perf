@@ -12,7 +12,7 @@
     <properties>
         <spring.version>4.2.0.RELEASE</spring.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <org.springframework.version>4.2.0.RELEASE</org.springframework.version>
+        <org.springframework.version>4.2.4.RELEASE</org.springframework.version>
         <org.eclipse.jetty.version>9.2.3.v20140905</org.eclipse.jetty.version>
         <slf4j.version>1.7.12</slf4j.version>
     </properties>
@@ -239,8 +239,15 @@
             <artifactId>hk2-api</artifactId>
             <version>2.4.0</version>
         </dependency>
-
-
-
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator-annotation-processor</artifactId>
+            <version>5.2.2.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>5.2.2.Final</version>
+        </dependency>
     </dependencies>
 </project>

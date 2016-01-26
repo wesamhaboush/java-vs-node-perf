@@ -6,7 +6,7 @@
 
     <!-- File Appender -->
     <appender name="FILE" class="org.apache.log4j.RollingFileAppender">
-        <param name="Threshold" value="ERROR" />
+        <param name="Threshold" value="DEBUG" />
         <param name="File" value="./server.log" />
         <param name="MaxFileSize" value="1MB" />
         <param name="MaxBackupIndex" value="1" />
@@ -22,7 +22,7 @@
     </appender>
 
     <root>
-        <level value="ERROR" />
+        <level value="DEBUG" />
         <appender-ref ref="ASYNC" />
     </root>
 

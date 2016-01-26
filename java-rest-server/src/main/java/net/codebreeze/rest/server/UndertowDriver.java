@@ -35,7 +35,7 @@ public class UndertowDriver extends AbstractDriver
             final DeploymentInfo servletBuilder = deployment()
                                                   .setClassLoader( UndertowDriver.class.getClassLoader() )
                                                   .setContextPath( "/" )
-                                                  .setDeploymentName( "testing performance" )
+                                                  .setDeploymentName( "testing-performance" )
                                                   .addServlets(
                                                           Servlets.servlet( "MyServlet", DispatcherServlet.class,
                                                                   new DispatcherServletInstanceFactory( getContext() ) )
