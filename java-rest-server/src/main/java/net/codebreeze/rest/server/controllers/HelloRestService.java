@@ -19,8 +19,8 @@ public class HelloRestService
                  ,
         produces = {MediaType.APPLICATION_JSON_UTF8_VALUE}
     )
-    public @ResponseBody
-    Greeting hello( @PathVariable( "name" ) String name )
+    @ResponseBody
+    public Greeting hello( @PathVariable( "name" ) String name )
     {
         System.out.println( name );
         return helloService.create( name );
